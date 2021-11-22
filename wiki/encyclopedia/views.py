@@ -11,16 +11,29 @@ class NewTaskForm(forms.Form):
 class CreateEntry(forms.Form):
     #title = forms.CharField(label="Title"),
     # Mind the typo on Charfield
+    # https://docs.djangoproject.com/en/3.2/ref/forms/widgets/
+    # comment = forms.CharField(widget=forms.TextInput(attrs={'size': '40'}))
     title = forms.CharField(
     label="Title",
-    max_length="111"
-    )
-     
+    max_length="111",
+    widget=forms.TextInput(attrs={
+        'size': '40'
+        })
+    )    
     #content = forms.Textarea(label="New Entry"),
-    content = forms.CharField(widget=forms.Textarea, label="Entry Content")
+    content = forms.CharField(
+        label="Entry Content",
+        # Textarea
+        widget=forms.Textarea(
+            attrs={
+                # rows for sizing
+                'size': '10'
+            }
+            )   
+        )
     edit = forms.BooleanField(initial=True)
     
-    
+ 
 
 
 def index(request):
