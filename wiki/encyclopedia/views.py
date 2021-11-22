@@ -10,13 +10,18 @@ class NewTaskForm(forms.Form):
 
 class CreateEntry(forms.Form):
     #title = forms.CharField(label="Title"),
-     title = forms.Charfiedl (
-        label="Title",
-        max_length="111"
-    
+    # Mind the typo on Charfield
+    title = forms.CharField(
+    label="Title",
+    max_length="111"
+    )
+     
     #content = forms.Textarea(label="New Entry"),
-    content = forms.CharField(widget=forms.Textarea, label="Entry Content"),
+    content = forms.CharField(widget=forms.Textarea, label="Entry Content")
     edit = forms.BooleanField(initial=True)
+    
+    
+
 
 def index(request):
     if "tasks" not in request.session:
