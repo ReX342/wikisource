@@ -23,15 +23,19 @@ class CreateEntry(forms.Form):
     #content = forms.Textarea(label="New Entry"),
     content = forms.CharField(
         label="Entry Content",
-        # Textarea
+        # Textarea (from styles.css)
         widget=forms.Textarea(
             attrs={
                 # rows for sizing
-                'size': '10'
+                'rows': '10',
+                # Under (from layout.html) main col-lg-10 col-md-9
+                # 'form-control col-md-8 col-lg-8'
+                # my-3 is padding: Margin y-axis level 3 (distance between inputfields)
+                'class': 'form-control my-3 col-md-10 col-lg-9',
             }
             )   
         )
-    edit = forms.BooleanField(initial=True)
+    edit = forms.BooleanField(initial=True, widget=forms.HiddenInput())
     
  
 
