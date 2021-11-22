@@ -1,5 +1,5 @@
 from django import forms
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from . import util
@@ -81,8 +81,10 @@ def create(request):
             #          
                 util.save_entry(title,content)
             # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
-                
                 return HttpResponseRedirect(reverse("encyclopedia:index"))
+            else:
+                # https://pytutorial.com/django-httpresponse#2
+                return HttpResponse('<h3>We already have that entry!</h3>')    
     else:
         form = CreateEntry()
     return render(request, "encyclopedia/create.html", {
