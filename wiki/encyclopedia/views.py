@@ -35,6 +35,7 @@ class CreateEntry(forms.Form):
             }
             )   
         )
+    #HiddenInput on the widget
     edit = forms.BooleanField(initial=True, widget=forms.HiddenInput())
     
  
@@ -69,21 +70,21 @@ def create(request):
     if request.method == "POST":
         form = CreateEntry(request.POST)
         if form.is_valid():
-            title = form.cleaned_data["edit"]
+            # title = title didn't work, so 'edit' for now
+            title = form.cleaned_data["title"]
             #request.session["entries"] += [title]
             content = form.cleaned_data["content"]
             #request.session["contents"] += [content]
             if util.get_entry(title) is not None: 
-                pass
+            #    pass
             # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
             #          
-            #    util.save_entry(title,content)
-            return HttpResponseRedirect(reverse("encyclopedia:index"))
-        else:
-            return render(request, "encyclopedia/create.html", {
-                "form": form
-            })
+                util.save_entry(title,content)
+            # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
+                
+                return HttpResponseRedirect(reverse("encyclopedia:index"))
     else:
-        return render(request, "encyclopedia/create.html", {
-            "form": CreateEntry()
-        })
+        form = CreateEntry()
+    return render(request, "encyclopedia/create.html", {
+        "form": form
+    })
