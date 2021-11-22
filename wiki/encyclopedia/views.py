@@ -75,7 +75,7 @@ def create(request):
             #request.session["entries"] += [title]
             content = form.cleaned_data["content"]
             #request.session["contents"] += [content]
-            if util.get_entry(title) is not None: 
+            if util.get_entry(title) is None: 
             #    pass
             # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
             #          
