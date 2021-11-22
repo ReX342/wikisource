@@ -4,9 +4,14 @@
     <h1>Add Entry</h1>
     <form action="{% url 'encyclopedia:create' %}" method="post">
         {% csrf_token %}
-        {{ form }}
-        
+        {{ form }}        
         <input type="submit">
     </form>
+
+    {% if title %}
+        <h3>We already have that entry!</h3>    
+        https://getbootstrap.com/docs/4.5/components/alerts/
+    {% endif %}
+
     <a href="{% url 'encyclopedia:index' %}">View All Entries</a>
 {% endblock %}

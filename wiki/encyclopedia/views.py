@@ -2,6 +2,9 @@ from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib import messages
+
+
 from . import util
 
 class NewTaskForm(forms.Form):
@@ -84,9 +87,31 @@ def create(request):
                 return HttpResponseRedirect(reverse("encyclopedia:index"))
             else:
                 # https://pytutorial.com/django-httpresponse#2
-                return HttpResponse('<h3>We already have that entry!</h3>')    
+                # return HttpResponse('<h3>We already have that entry!</h3>')    
+                edit = False
+                # https://www.fullstackpython.com/django-forms-booleanfield-examples.html
+                #raise forms.ValidationError('We already have an entry by that name!')
+                # https://pythonprogramming.net/messages-django-tutorial/
+                # https://docs.djangoproject.com/en/3.2/ref/contrib/messages/
+                # messages.add_message(request, messages.WARNING, 'We already have an entry by that name!')
+                messages.warning(request, 'We already have an entry by that name!')               
+                # https://github.com/ReX342/wiki/blob/main/encyclopedia/views.py\
+                # Come up with correct use of kwargs
+                # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
+                # for considering to reverse to create(.html/path)
+                # https://docs.djangoproject.com/en/3.2/topics/http/urls/#topics-http-reversing-url-namespaces
+                # for encyclopedia:create
+                return HttpResponseRedirect(reverse("encyclopedia:create", kwargs={"title": title}))
+
+                messages.warning(request, 'We already have an entry by that name!')
+                # https://pythonprogramming.net/messages-django-tutorial/
+                # for msg in form.error_messages:
+                #     messages.error(request, f"{msg}: {form.error_messages[msg]}")
+                
     else:
         form = CreateEntry()
     return render(request, "encyclopedia/create.html", {
         "form": form
     })
+def edit_entry(request, edit):
+    pass    
