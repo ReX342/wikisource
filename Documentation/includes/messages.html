@@ -1,0 +1,6 @@
+<!-- https://pythonprogramming.net/messages-django-tutorial/ -->
+{% if messages %}
+    {% for message in messages %}
+    <script>M.toast({html: {{messagges}}", classes: 'blue rounded', displayLength:2000});</script>
+    {% endfor %}
+{% endif %}

@@ -1,6 +1,6 @@
 from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
 
@@ -80,38 +80,48 @@ def create(request):
             #request.session["contents"] += [content]
             if util.get_entry(title) is None: 
             #    pass
-            # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
-            #          
                 util.save_entry(title,content)
             # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
                 return HttpResponseRedirect(reverse("encyclopedia:index"))
             else:
-                # https://pytutorial.com/django-httpresponse#2
-                # return HttpResponse('<h3>We already have that entry!</h3>')    
-                edit = False
-                # https://www.fullstackpython.com/django-forms-booleanfield-examples.html
-                #raise forms.ValidationError('We already have an entry by that name!')
-                # https://pythonprogramming.net/messages-django-tutorial/
-                # https://docs.djangoproject.com/en/3.2/ref/contrib/messages/
-                # messages.add_message(request, messages.WARNING, 'We already have an entry by that name!')
-                messages.warning(request, 'We already have an entry by that name!')               
+                check_entry(request, title)                            
                 # https://github.com/ReX342/wiki/blob/main/encyclopedia/views.py\
                 # Come up with correct use of kwargs
                 # https://docs.djangoproject.com/en/3.2/ref/urlresolvers/
                 # for considering to reverse to create(.html/path)
                 # https://docs.djangoproject.com/en/3.2/topics/http/urls/#topics-http-reversing-url-namespaces
-                # for encyclopedia:create
-                return HttpResponseRedirect(reverse("encyclopedia:create", kwargs={"title": title}))
-
-                messages.warning(request, 'We already have an entry by that name!')
-                # https://pythonprogramming.net/messages-django-tutorial/
-                # for msg in form.error_messages:
-                #     messages.error(request, f"{msg}: {form.error_messages[msg]}")
-                
+                # for encyclopedia:create             
+                #return HttpResponseRedirect(reverse("encyclopedia:create", kwargs={"title": title})) 
+                return redirect("encyclopedia:create", kwargs={"title": title}) 
     else:
-        form = CreateEntry()
+        form = CreateEntry()              
     return render(request, "encyclopedia/create.html", {
         "form": form
     })
-def edit_entry(request, edit):
-    pass    
+
+#We're called on because there's already an entry (with 'title')    
+def check_entry(request, title):
+    # https://pytutorial.com/django-httpresponse#2
+    # return HttpResponse('<h3>We already have that entry!</h3>')    
+    
+    # lock the editing 
+    edit = False
+    # and send {title} to create.html so it alerts user
+    messages.warning(request, 'We already have an entry by that name!')
+    # https://pythonprogramming.net/messages-django-tutorial/
+    form = CreateEntry(request.POST)
+    # for msg in form.error_messages:
+    #     messages.error(request, f"{msg}: {form.error_messages[msg]}")
+
+                
+    
+    # https://www.fullstackpython.com/django-forms-booleanfield-examples.html
+    #raise forms.ValidationError('We already have an entry by that name!')
+
+    # https://pythonprogramming.net/messages-django-tutorial/
+    # https://docs.djangoproject.com/en/3.2/ref/contrib/messages/
+
+
+
+    # messages.add_message(request, messages.WARNING, 'We already have an entry by that name!')
+    messages.warning(request, 'We already have an entry by that name!')
