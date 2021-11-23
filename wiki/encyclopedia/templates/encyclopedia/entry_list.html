@@ -1,0 +1,8 @@
+<!-- blog/templates/blog/post_list.html -->
+{% for entry in entry_list %}
+<div>
+  <h2>{{ entry.title }}</h2>
+  <p>{{ entry.content }}</p>
+</div>
+<hr>
+{% endfor %}

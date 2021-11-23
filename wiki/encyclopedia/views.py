@@ -1,11 +1,20 @@
 from django import forms
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.shortcuts import render, redirect, reverse
+#from django.urls import reverse (already NoReverseMatch without import??!)
 from django.contrib import messages
+# https://learndjango.com/tutorials/django-markdown-tutorial
+from django.views.generic import ListView
 
+from .models import Entry
 
+# https://github.com/sir-ragna/django-wiki
+import markdown
 from . import util
+
+class BlogListView(ListView):
+    model = Entry
+    template_name = 'entry_list.html'
 
 class NewTaskForm(forms.Form):
     task = forms.CharField(label="New Task")
@@ -91,13 +100,17 @@ def create(request):
                 # for considering to reverse to create(.html/path)
                 # https://docs.djangoproject.com/en/3.2/topics/http/urls/#topics-http-reversing-url-namespaces
                 # for encyclopedia:create             
-                #return HttpResponseRedirect(reverse("encyclopedia:create", kwargs={"title": title})) 
-                return redirect("encyclopedia:create", kwargs={"title": title}) 
+                # return HttpResponseRedirect(reverse("encyclopedia:create", kwargs={"title": title})) 
+                # https://github.com/sir-ragna/django-wiki/blob/main/posts/views.py
+                return redirect("encyclopedia:view", kwargs={"title": title}) 
+            
     else:
         form = CreateEntry()              
     return render(request, "encyclopedia/create.html", {
         "form": form
     })
+    
+#get_messages(request)
 
 #We're called on because there's already an entry (with 'title')    
 def check_entry(request, title):
@@ -107,7 +120,7 @@ def check_entry(request, title):
     # lock the editing 
     edit = False
     # and send {title} to create.html so it alerts user
-    messages.warning(request, 'We already have an entry by that name!')
+    messages.warning(request, f'We already have an entry for {{ title }}!')
     # https://pythonprogramming.net/messages-django-tutorial/
     form = CreateEntry(request.POST)
     # for msg in form.error_messages:
@@ -125,3 +138,15 @@ def check_entry(request, title):
 
     # messages.add_message(request, messages.WARNING, 'We already have an entry by that name!')
     messages.warning(request, 'We already have an entry by that name!')
+
+    #'messages': messages.get_messages(request)
+# https://github.com/sir-ragna/django-wiki/blob/main/posts/views.py
+def view_entry(request, title):
+    if not title in util.list_entries():
+        return HttpResponseNotFound("Could not find anything under that entry")
+    post_content = util.get_entry(title)
+    html_content = markdown.markdown(post_content)
+    return render(request, "view_entry", {
+        'title': title, 
+        'content': html_content
+    })    

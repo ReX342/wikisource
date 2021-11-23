@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% block title %}
+{{ title }}
+{% endblock%}
+{% include 'encyclopedia/includes/all_msgs.html' %}
+
+<p>
+    {{ content|safe }}
+</p>
+
+{% endblock content %}
